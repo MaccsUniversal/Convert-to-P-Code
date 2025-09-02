@@ -17,11 +17,11 @@ pageextension 50100 "Sales Order PCode" extends "Sales Order"
                 Image = Change;
                 trigger OnAction()
                 var
-                    CheckFields: Codeunit "Check Fields PCode";
+                    ConvertToPcode: Codeunit "Convert To PCode";
                 begin
                     Rec.SetFilter("No.", Rec."No.");
                     if Rec.FindFirst() then
-                        CheckFields.Run(Rec);
+                        ConvertToPcode.Run(Rec);
                 end;
             }
         }

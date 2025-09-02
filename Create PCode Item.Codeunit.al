@@ -51,6 +51,7 @@ codeunit 50102 "Create PCode Item"
     begin
         TargetItem."Last Direct Cost" := 0;
         TargetItem."Unit Cost" := 0;
+        TargetItem."Unit Price" := 0;
         TargetItem.Modify();
     end;
 
