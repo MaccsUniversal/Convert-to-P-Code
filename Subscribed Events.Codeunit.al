@@ -23,12 +23,13 @@ codeunit 50105 "Subscribed Events"
     end;
 
     [EventSubscriber(ObjectType::Codeunit, Codeunit::"Whse.-Post Shipment", OnGetResultMessageOnBeforeShowMessage, '', true, true)]
-    local procedure OnOnAfterCode(var IsHandled: Boolean)
+    local procedure OnOnGetResultMessageOnBeforeShowMessage(var IsHandled: Boolean)
     begin
         if not ConfirmShipment then
             exit;
 
-        IsHandled := false;
+        IsHandled := true;
+        ConfirmShipment := false;
     end;
 
     [EventSubscriber(ObjectType::Codeunit, Codeunit::"Whse.-Post Shipment (Yes/No)", OnBeforeConfirmWhseShipmentPost, '', true, true)]
@@ -41,7 +42,6 @@ codeunit 50105 "Subscribed Events"
         HideDialog := true;
         Invoice := true;
         Selection := 2;
-        ConfirmShipment := false;
     end;
 
     [EventSubscriber(ObjectType::Codeunit, Codeunit::"Whse.-Act.-Register (Yes/No)", OnBeforeConfirmRegister, '', true, true)]
@@ -52,7 +52,6 @@ codeunit 50105 "Subscribed Events"
 
         IsHandled := true;
         Result := true;
-        ConfirmShipment := false;
     end;
 
     [EventSubscriber(ObjectType::Report, Report::"Get Source Documents", OnBeforeShowSingleWhseShptHeaderCreatedMessage, '', true, true)]

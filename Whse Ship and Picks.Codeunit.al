@@ -23,7 +23,9 @@ codeunit 50104 "Whse. Shipment and Picks"
         WhseShipAndInvoice: Codeunit "Whse. Ship and Invoice";
     begin
         Enable := true;
+        BindSubscription(WhseShipAndInvoice);
         WhseShipAndInvoice.EnableEvent(Enable);
+        UnbindSubscription(WhseShipAndInvoice);
     end;
 
     local procedure RunShipAndInvoice()

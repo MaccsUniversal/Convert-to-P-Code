@@ -1,5 +1,6 @@
 codeunit 50106 "Whse. Ship and Invoice"
 {
+    EventSubscriberInstance = Manual;
     TableNo = "Warehouse Shipment Header";
     trigger OnRun()
     begin
