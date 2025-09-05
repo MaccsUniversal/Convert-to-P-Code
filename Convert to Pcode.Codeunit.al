@@ -5,15 +5,24 @@ codeunit 50100 "Convert To PCode"
     begin
         Index := 1;
         CheckSaleHeaderFields(Rec);
+        if not Confirm('Convert items on this order to PCode?', false) then
+            exit;
         if not GetItemBinCodes(Rec) then
             exit;
-        UpdateItemNoArray();
+        UpdateItemNoArray(Rec);
         if CreateMovement(MovementWrkshLines) then
             RegisterMovementActivity();
         CreateWhseShipment(Rec);
         PositivelyAdjustPCodeItems();
         CalculateWhseAdj();
         //Positively adjust whse Item Journal.
+    end;
+
+    local procedure InvoiceSalesOrder(var SalesHeader: Record "Sales Header")
+    var
+        InvoiceOrder: Codeunit "Ship and Invoice Sales Order";
+    begin
+        InvoiceOrder.Run(SalesHeader);
     end;
 
     local procedure CalculateWhseAdj()
@@ -52,35 +61,35 @@ codeunit 50100 "Convert To PCode"
 
     local procedure CreateWhseShipment(var SalesHeader: record "Sales Header")
     var
-        WhseShipmentAndPicks: Codeunit "Whse. Shipment and Picks";
+        CreateWhseShipmentAndPicks: Codeunit "Create Whse. Shpmt and Picks";
         SalesOrderRelease: Record "Sales Order Release Setup";
         PickOnly: Boolean;
         CreateWhseDoc: Boolean;
         ConfirmPosting: Boolean;
     begin
-        BindSubscription(WhseShipmentAndPicks);
+        BindSubscription(CreateWhseShipmentAndPicks);
         ConfirmPosting := true;
         CreateWhseDoc := true;
         if SalesOrderRelease.Find('-') then begin
             if (SalesOrderRelease.EnableCreatePicks = false) and (SalesOrderRelease.EnableCreateWhseDoc = true) then begin
                 PickOnly := true;
-                WhseShipmentAndPicks.PickOnly(PickOnly);
+                CreateWhseShipmentAndPicks.PickOnly(PickOnly);
             end;
             if (SalesOrderRelease.EnableCreatePicks = false) and (SalesOrderRelease.EnableCreateWhseDoc = false) then begin
                 CreateWhseDoc := true;
-                WhseShipmentAndPicks.CreateWhseShptDoc(CreateWhseDoc);
-                WhseShipmentAndPicks.PickAfterWhseShpmt(CreateWhseDoc);
+                CreateWhseShipmentAndPicks.CreateWhseShptDoc(CreateWhseDoc);
+                CreateWhseShipmentAndPicks.PickAfterWhseShpmt(CreateWhseDoc);
             end;
         end else begin
             CreateWhseDoc := true;
-            WhseShipmentAndPicks.CreateWhseShptDoc(CreateWhseDoc);
-            WhseShipmentAndPicks.PickAfterWhseShpmt(CreateWhseDoc);
+            CreateWhseShipmentAndPicks.CreateWhseShptDoc(CreateWhseDoc);
+            CreateWhseShipmentAndPicks.PickAfterWhseShpmt(CreateWhseDoc);
         end;
         BindSubscription(SubscribedEvents);
         ConfirmShipment(ConfirmPosting);
-        WhseShipmentAndPicks.CreateWhseShptDoc(CreateWhseDoc);
-        WhseShipmentAndPicks.Run(SalesHeader);
-        UnbindSubscription(WhseShipmentAndPicks);
+        CreateWhseShipmentAndPicks.CreateWhseShptDoc(CreateWhseDoc);
+        CreateWhseShipmentAndPicks.Run(SalesHeader);
+        UnbindSubscription(CreateWhseShipmentAndPicks);
         UnbindSubscription(SubscribedEvents);
     end;
 
@@ -89,10 +98,11 @@ codeunit 50100 "Convert To PCode"
         SubscribedEvents.SetConfirmShipment(Confirm);
     end;
 
-    local procedure UpdateItemNoArray()
+    local procedure UpdateItemNoArray(var Salesheader: Record "Sales Header")
     var
         i: Integer;
         ProposedItemCode: Code[20];
+        ItemNo: Text;
     begin
         for i := 1 to Index do begin
             if ItemNoArray[i] = '' then
@@ -155,7 +165,7 @@ codeunit 50100 "Convert To PCode"
                 continue;
             ItemNo := SalesLine."No.";
             if ItemNo.EndsWith('P') then
-                continue;
+                Error('Cannot create duplicate of Pcode Item ' + ItemNo + ' already exists. Please remove this item from sales order ' + SalesHeader."No.");
             SalesLine.CheckItemAvailable(SalesLine.FieldNo("Shipment Date"));
             Ok := GetBinContents(SalesLine);
             if not Ok then

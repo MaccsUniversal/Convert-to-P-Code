@@ -1,4 +1,4 @@
-codeunit 50104 "Whse. Shipment and Picks"
+codeunit 50104 "Create Whse. Shpmt and Picks"
 {
     TableNo = "Sales Header";
     EventSubscriberInstance = Manual;

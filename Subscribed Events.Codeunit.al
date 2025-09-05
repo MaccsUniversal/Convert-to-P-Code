@@ -2,6 +2,11 @@ codeunit 50105 "Subscribed Events"
 {
     EventSubscriberInstance = Manual;
 
+    procedure SetInvoiceSalesOrder(var InvoiceFromPcode: Boolean)
+    begin
+        Invoice := InvoiceFromPcode;
+    end;
+
     procedure SetConfirmShipment(var Confirmshpt: Boolean)
     begin
         ConfirmShipment := Confirmshpt;
@@ -74,6 +79,7 @@ codeunit 50105 "Subscribed Events"
     end;
 
     var
+        Invoice: Boolean;
         ConfirmShipment: Boolean;
         PostJnlLines: Boolean;
 }
