@@ -45,8 +45,7 @@ codeunit 50105 "Subscribed Events"
 
         IsPosted := false;
         HideDialog := true;
-        Invoice := true;
-        Selection := 2;
+        Invoice := false;
     end;
 
     [EventSubscriber(ObjectType::Codeunit, Codeunit::"Whse.-Act.-Register (Yes/No)", OnBeforeConfirmRegister, '', true, true)]

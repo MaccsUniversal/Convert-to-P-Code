@@ -33,15 +33,6 @@ codeunit 50111 "Ship and Invoice Sales Order"
         IsHandled := true;
     end;
 
-    [EventSubscriber(ObjectType::Codeunit, Codeunit::"Sales-Post (Yes/No)", OnBeforeConfirmSalesPost, '', true, true)]
-    local procedure HideDialogOnBeforeConfirmSalesPost(var HideDialog: Boolean)
-    begin
-        if not InvoiceOrder then
-            exit;
-
-        HideDialog := true;
-    end;
-
     var
         InvoiceOrder: Boolean;
 

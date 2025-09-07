@@ -13,6 +13,7 @@ codeunit 50100 "Convert To PCode"
         if CreateMovement(MovementWrkshLines) then
             RegisterMovementActivity();
         CreateWhseShipment(Rec);
+        InvoiceSalesOrder(Rec);
         PositivelyAdjustPCodeItems();
         CalculateWhseAdj();
         //Positively adjust whse Item Journal.
