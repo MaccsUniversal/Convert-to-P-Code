@@ -22,8 +22,14 @@ codeunit 50100 "Convert To PCode"
     local procedure InvoiceSalesOrder(var SalesHeader: Record "Sales Header")
     var
         InvoiceOrder: Codeunit "Ship and Invoice Sales Order";
+        SetInvoiceOrder: Boolean;
     begin
+        SetInvoiceOrder := true;
+        BindSubscription(InvoiceOrder);
+        InvoiceOrder.InvoiceFromPcodeExt(SetInvoiceOrder);
         InvoiceOrder.Run(SalesHeader);
+        // Codeunit.Run(Codeunit::"Sales-Post (Yes/No)", SalesHeader);
+        UnbindSubscription(InvoiceOrder);
     end;
 
     local procedure CalculateWhseAdj()

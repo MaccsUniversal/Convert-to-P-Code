@@ -6,7 +6,6 @@ codeunit 50111 "Ship and Invoice Sales Order"
     var
         SalesHeader: Record "Sales Header";
     begin
-        InvoiceFromPcodeExt();
         SalesHeader.Copy(Rec);
         Code(SalesHeader);
         Rec := SalesHeader;
@@ -18,9 +17,9 @@ codeunit 50111 "Ship and Invoice Sales Order"
     end;
 
 
-    local procedure InvoiceFromPcodeExt()
+    procedure InvoiceFromPcodeExt(var RaiseInvoice: Boolean)
     begin
-        InvoiceOrder := true;
+        InvoiceOrder := RaiseInvoice;
     end;
 
     [EventSubscriber(ObjectType::Codeunit, Codeunit::"Posting Selection Management", OnBeforeGetSalesOrderPostingSelection, '', true, true)]
